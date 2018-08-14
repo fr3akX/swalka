@@ -9,8 +9,10 @@ class FileWriter extends Writer[Id] {
   private val fos = new FileOutputStream("journal.log", true)
   private val c = fos.getChannel
 
-  override def write(data: Array[Byte]): Unit =
-    c.write(ByteBuffer.wrap(data))
+  override def write(data: ByteBuffer): Unit = {
+    data.flip()
+    c.write(data)
+  }
 
   override def flush: Unit = {
     c.force(true)
