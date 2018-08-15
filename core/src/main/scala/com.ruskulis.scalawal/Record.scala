@@ -2,7 +2,7 @@ package com.ruskulis.scalawal
 
 import java.io.{ByteArrayOutputStream, InputStream}
 import java.nio.ByteBuffer
-import java.nio.channels.FileChannel
+import java.nio.channels.{FileChannel, SeekableByteChannel}
 import java.util.zip.{CRC32, GZIPOutputStream}
 
 
@@ -22,11 +22,9 @@ case class Record(length: Int, checksum: Long, data: Array[Byte])
 
 object Record {
 
+  def wrap(data: Array[Byte]): Record = Record(data.length, checksum(data), data)
 
-
-  def fromWriter(data: Array[Byte]): Record = Record(data.length, checksum(data), data)
-
-  def toData(record: Record): ByteBuffer = {
+  def toByteBuffer(record: Record): ByteBuffer = {
     val bb = ByteBuffer.allocate(longSize + intSize + record.length)
     bb
       .putInt(record.length)
@@ -34,7 +32,7 @@ object Record {
       .put(record.data)
   }
 
-  def fromChannel(channel: FileChannel): (Long, Record) = {
+  def fromChannel(channel: SeekableByteChannel): (Long, Record) = {
     val sizeBB = ByteBuffer.allocate(intSize)
     channel.read(sizeBB)
     sizeBB.flip()

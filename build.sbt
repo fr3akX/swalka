@@ -32,3 +32,5 @@ lazy val root = Project("scalawal", file("."))
   .settings(moduleName := "scalawal")
   .settings(defaultSettings)
   .aggregate(core, test, benchmark)
+
+addCommandAlias("bench", "; project benchmark; jmh:run -i 1 -wi 3 -f1 -t1")

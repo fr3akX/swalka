@@ -6,7 +6,7 @@ import java.nio.ByteBuffer
 import cats.Id
 
 class FileWriter extends Writer[Id] {
-  private val fos = new FileOutputStream("journal.log", true)
+  private val fos = new FileOutputStream("../journal.log", true)
   private val c = fos.getChannel
 
   override def write(data: ByteBuffer): Unit = {

@@ -13,7 +13,6 @@ class FileReader(initalOffset: Long) extends Reader[Id] {
 
   private var offset: Long = initalOffset
   in.skip(initalOffset)
-  in.getChannel.position()
 
   override def next: Id[Reader.ReadResult] = {
     val (totalLength, data) = Record.fromChannel(channel)
