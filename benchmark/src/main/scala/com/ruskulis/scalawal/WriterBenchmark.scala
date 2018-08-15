@@ -1,6 +1,5 @@
 package com.ruskulis.scalawal
 
-import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import com.ruskulis.scalawal.WriterBenchmark._
@@ -26,7 +25,7 @@ class WriterBenchmark {
     //[info] WriterBenchmark.walWrite  thrpt    3  7109.277 ± 2347.298  ops/ms
     // wihout arrays [info] WriterBenchmark.walWrite  thrpt    3  24714.269 ± 6540.441  ops/ms
     WriterBenchmark.writer.write(Record.toData(rec))
-    //WriterBenchmark.writer.flush
+    WriterBenchmark.writer.flush
   }
 
 }

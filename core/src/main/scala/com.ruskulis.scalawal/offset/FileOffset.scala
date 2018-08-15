@@ -7,8 +7,14 @@ import cats.Id
 import com.ruskulis.scalawal.Record
 
 class FileOffset extends Offset[Id] {
-  val offsetFile = "offset"
-  val fos = Files.newByteChannel(Paths.get(offsetFile), StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE)
+
+  private val offsetFile = "offset"
+  private val fos = Files.newByteChannel(
+    Paths.get(offsetFile),
+    StandardOpenOption.CREATE,
+    StandardOpenOption.READ,
+    StandardOpenOption.WRITE
+  )
 
   override def commit(pos: Long): Id[Unit] = {
     fos.position(0)

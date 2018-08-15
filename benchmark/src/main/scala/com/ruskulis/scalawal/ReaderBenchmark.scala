@@ -1,9 +1,9 @@
 package com.ruskulis.scalawal
 import java.util.concurrent.TimeUnit
 
+import com.ruskulis.scalawal.ReaderBenchmark._
 import com.ruskulis.scalawal.reader.FileReader
 import org.openjdk.jmh.annotations._
-import ReaderBenchmark._
 
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))

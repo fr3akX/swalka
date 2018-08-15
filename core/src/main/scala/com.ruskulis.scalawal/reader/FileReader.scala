@@ -7,12 +7,13 @@ import com.ruskulis.scalawal.Record
 import com.ruskulis.scalawal.reader.Reader.ReadResult
 
 class FileReader(initalOffset: Long) extends Reader[Id] {
-  val in = new FileInputStream("journal.log")
-  val channel = in.getChannel
 
+  private val in = new FileInputStream("journal.log")
+  private val channel = in.getChannel
+
+  private var offset: Long = initalOffset
   in.skip(initalOffset)
   in.getChannel.position()
-  var offset: Long = initalOffset
 
   override def next: Id[Reader.ReadResult] = {
     val (totalLength, data) = Record.fromChannel(channel)
