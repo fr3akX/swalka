@@ -1,4 +1,4 @@
-# ScalaWal - Scala Write Ahead Log
+# SWALka - ScalaWal - Scala Write Ahead Log
 
 The project goal is to create fast and reliable general write ahead log implementation, for use cases such as - 
 guaranteed side effect execution even in face of jvm or node crash. It can be used also for limited event sourcing usecases.
