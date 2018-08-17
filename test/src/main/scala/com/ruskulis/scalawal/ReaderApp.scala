@@ -17,6 +17,7 @@ object ReaderApp extends App {
   def waitModification(): Unit = {
     val path = Paths.get(".")
     val watchKey = path.register(ws, StandardWatchEventKinds.ENTRY_MODIFY)
+    println("Waiting for events")
     val wk = ws.take()
     if(wk.pollEvents().asScala.map(_.context().asInstanceOf[Path]).exists(_.endsWith("journal.log"))){
       wk.reset()

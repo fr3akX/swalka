@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.file.{Files, Paths, StandardOpenOption}
 
 import cats.Id
-import com.ruskulis.scalawal.Record
+import com.ruskulis.scalawal._
 
 class FileOffset extends Offset[Id] {
 
@@ -18,7 +18,7 @@ class FileOffset extends Offset[Id] {
 
   override def commit(pos: Long): Id[Unit] = {
     fos.position(0)
-    val ll =  ByteBuffer.allocate(Record.longSize)
+    val ll =  ByteBuffer.allocate(longSize)
     ll.putLong(pos)
     ll.flip()
     fos.write(ll)
@@ -27,7 +27,7 @@ class FileOffset extends Offset[Id] {
   override def current: Id[Long] = {
     if(fos.size() == 0) 0L
     else {
-      val buf = ByteBuffer.allocate(Record.longSize)
+      val buf = ByteBuffer.allocate(longSize)
       fos.position(0)
       fos.read(buf)
       buf.flip()

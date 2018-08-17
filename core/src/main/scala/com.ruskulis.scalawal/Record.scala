@@ -67,7 +67,4 @@ object Record {
     byteStream.close()
     byteStream.toByteArray
   }
-
-  val longSize = java.lang.Long.BYTES
-  val intSize = java.lang.Integer.BYTES
 }
