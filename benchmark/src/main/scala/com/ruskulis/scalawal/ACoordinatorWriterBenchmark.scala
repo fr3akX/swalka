@@ -10,14 +10,20 @@ import scala.io.Source
 
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
-class AACoordinatorWriteBenchmark {
+class ACoordinatorWriterBenchmark {
+  @Benchmark
+  def walWriteWithFlush: Unit = {
+    ACoordinatorWriterBenchmark.writer.write(Record.toByteBuffer(rec))
+    ACoordinatorWriterBenchmark.writer.flush
+  }
+
   @Benchmark
   def walWriteWithoutFlush: Unit = {
-    AACoordinatorWriteBenchmark.writer.write(Record.toByteBuffer(rec))
+    ACoordinatorWriterBenchmark.writer.write(Record.toByteBuffer(rec))
   }
 }
 
-object AACoordinatorWriteBenchmark {
+object ACoordinatorWriterBenchmark {
   val rec = Record.wrap(Source.fromResource("small.json").mkString.getBytes())
   lazy val writer = new WriterCoordinator(ReaderBenchmark.targetPath, 1024 * 1024 * 1024 * 1)
 }
