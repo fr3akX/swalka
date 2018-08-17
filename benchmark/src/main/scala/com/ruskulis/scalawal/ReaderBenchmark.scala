@@ -1,4 +1,5 @@
 package com.ruskulis.scalawal
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 import com.ruskulis.scalawal.ReaderBenchmark._
@@ -20,5 +21,5 @@ class ReaderBenchmark {
 }
 
 object ReaderBenchmark {
-  val walReader = new FileReader(0)
+  val walReader = new FileReader(Paths.get("."), 0, 0)
 }

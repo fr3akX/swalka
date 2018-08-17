@@ -1,14 +1,15 @@
 package com.ruskulis.scalawal.reader
 
 import java.io.FileInputStream
+import java.nio.file.Path
 
 import cats.Id
 import com.ruskulis.scalawal.Record
 import com.ruskulis.scalawal.reader.Reader.ReadResult
 
-class FileReader(initalOffset: Long) extends Reader[Id] {
+class FileReader(path: Path, segment: Int, initalOffset: Long) extends Reader[Id] {
 
-  private val in = new FileInputStream("journal.log")
+  private val in = new FileInputStream(path.resolve(s"journal.$segment").toAbsolutePath.toString)
   private val channel = in.getChannel
 
   private var offset: Long = initalOffset

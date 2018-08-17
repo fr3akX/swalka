@@ -1,16 +1,16 @@
 package com.ruskulis.scalawal.offset
 
 import java.nio.ByteBuffer
-import java.nio.file.{Files, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 
 import cats.Id
 import com.ruskulis.scalawal._
 
-class FileOffset extends Offset[Id] {
+class FileOffset(path: Path) extends Offset[Id] {
 
-  private val offsetFile = "offset"
+  private val offset = path.resolve("offset")
   private val fos = Files.newByteChannel(
-    Paths.get(offsetFile),
+    offset,
     StandardOpenOption.CREATE,
     StandardOpenOption.READ,
     StandardOpenOption.WRITE

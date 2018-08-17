@@ -7,10 +7,10 @@ import com.ruskulis.scalawal.reader.FileReader
 
 import scala.collection.JavaConverters._
 object ReaderApp extends App {
-  val offset = new FileOffset
+  val offset = new FileOffset(Paths.get("."))
 
   println(s"current offset: ${offset.current}")
-  val reader = new FileReader(offset.current)
+  val reader = new FileReader(Paths.get("."), 0, offset.current)
   val ws = FileSystems.getDefault.newWatchService()
 
 

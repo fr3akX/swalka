@@ -61,6 +61,13 @@ object Segment {
     nextSeg :: segments
   }
 
+  def currentSegment(segments: List[Segment], bc: SeekableByteChannel): (Segment, List[Segment]) = segments match {
+    case current :: _ if current.closedAt.isEmpty => (current, segments)
+    case other =>
+      val current :: rest = newSegment(other, bc)
+      (current, current :: rest)
+  }
+
   def hasNext(bc: SeekableByteChannel): Boolean = bc.position() < bc.size()
 
   def readAll(bc: SeekableByteChannel): List[Segment] = {

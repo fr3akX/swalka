@@ -34,6 +34,7 @@ class SegmentSpec extends FlatSpec with Matchers {
     val segments = Segment.readAll(bc)
     segments shouldBe List.empty[Segment]
   }
+
   it should "be able to create first segment" in withRecoveryTest { bc =>
     val segments = Segment.readAll(bc)
     val newSegments = Segment.newSegment(segments, bc)

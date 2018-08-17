@@ -1,5 +1,6 @@
 package com.ruskulis.scalawal
 
+import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 import com.ruskulis.scalawal.WriterBenchmark._
@@ -26,5 +27,5 @@ class WriterBenchmark {
 
 object WriterBenchmark {
   val rec = Record.wrap(Source.fromResource("small.json").mkString.getBytes())
-  val writer = new FileWriter
+  val writer = new FileWriter(Paths.get("."), 0)
 }

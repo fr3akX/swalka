@@ -25,4 +25,6 @@ class FileWriter(path: Path, segment: Int) extends Writer[Id] {
     c.close()
     fos.close()
   }
+
+  def size: Long = c.size()
 }
