@@ -78,6 +78,7 @@ object Segment {
       if(seg.closedAt.isEmpty || !hasNext(bc)) rl
       else recRead(bc, rl)
     }
+
     if(bc.position() == bc.size()) List.empty[Segment]
     else recRead(bc, List.empty[Segment])
   }
