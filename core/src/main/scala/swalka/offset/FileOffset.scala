@@ -6,9 +6,9 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import swalka._
 import swalka.offset.Offset.Current
 
-class FileOffset(path: Path) extends Offset {
+class FileOffset(id: String, path: Path) extends Offset {
 
-  private val offset = path.resolve("offset")
+  private val offset = path.resolve(s"offset.$id")
   private val fos = Files.newByteChannel(
     offset,
     StandardOpenOption.CREATE,

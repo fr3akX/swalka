@@ -2,14 +2,13 @@ package swalka
 
 import org.scalatest.{FlatSpec, Matchers}
 import swalka.offset.FileOffset
-import swalka.offset.Offset.Current
 import swalka.reader.FileReader
 
 class FileReaderSpec extends FlatSpec with Matchers {
 
   it should "be able to read written log from beginning" in Util.withWrittenLog { path =>
 
-      val offset = new FileOffset(path)
+      val offset = new FileOffset("test", path)
 
       println(s"OFFSET: ${offset.current}")
       def incrementallyRead(): Unit = {

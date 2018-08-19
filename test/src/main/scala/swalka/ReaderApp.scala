@@ -29,7 +29,7 @@ object ReaderApp extends App {
   def doRead(): Unit = {
     println("Doing read")
 
-    val offset = new FileOffset(dbPath)
+    val offset = new FileOffset("app", dbPath)
     val segReader = new SegmentedReader(dbPath, offset.current)
 
     println(s"current offset: ${offset.current}")
