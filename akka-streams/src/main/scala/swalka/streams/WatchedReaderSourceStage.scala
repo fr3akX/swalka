@@ -9,6 +9,12 @@ import swalka.reader.CommitableReader.CommitableResult
 import swalka.reader.{CommitableReader, SegmentedReader}
 import swalka.watch.Watcher
 
+
+/**
+  * TODO logic: do not close file on eof until it has been marked as closed in segments
+  * @param readerId
+  * @param dbPath
+  */
 class WatchedReaderSourceStage(readerId: String, dbPath: Path) extends GraphStage[SourceShape[CommitableResult]] {
   val out: Outlet[CommitableResult] = Outlet("CommitableResultSource")
 
