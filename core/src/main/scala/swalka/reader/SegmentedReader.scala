@@ -3,26 +3,29 @@ package swalka.reader
 import java.nio.file.{Files, Path, StandardOpenOption}
 
 import swalka.Segment
-import swalka.reader.SegmentedReader.ReadFrom
+import swalka.offset.Offset.Current
 
-class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader {
+class SegmentedReader(path: Path, readFrom: Current) extends Reader {
   private val segmentReadChannel = Files.newByteChannel(Segment.path(path), StandardOpenOption.READ)
 
-  var currentSegment :: rest = Segment
+  private var currentSegment :: rest = Segment
     .readAll(segmentReadChannel)
     .takeWhile(_.num >= readFrom.segment).reverse
 
-  var currentLog = new FileReader(path, currentSegment.num, 0)
+  private var currentLog = new FileReader(path, currentSegment.num, readFrom.pos)
 
 
   private def openNext = rest match {
     case Nil =>
-
+      println("No next log, reached oef")
     case h :: t =>
+      println(s"Found next log $h $t")
       currentSegment = h
       rest = t
       currentLog = new FileReader(path, currentSegment.num, 0)
   }
+
+  override type R = Reader.ReadResult
 
   override def next: Reader.ReadResult = currentLog.next
 
@@ -30,6 +33,7 @@ class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader {
     val hn = currentLog.hasNext
     if(hn) hn
     else {
+      println(s"openining next log, from current: $currentSegment")
       openNext
       currentLog.hasNext
     }
@@ -42,6 +46,5 @@ class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader {
 }
 
 object SegmentedReader {
-  val Beginning = ReadFrom(0, 0)
-  case class ReadFrom(segment: Int, offset: Long)
+  val Beginning = Current(0, 0)
 }

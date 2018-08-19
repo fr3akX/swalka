@@ -1,11 +1,14 @@
 package swalka.reader
 
-import swalka.reader.Reader.ReadResult
+import swalka.offset.Offset.Current
+import swalka.reader.Reader.Result
 
 import scala.language.higherKinds
 
 trait Reader {
-  def next: ReadResult
+  type R <: Result
+
+  def next: R
 
   def hasNext: Boolean
 
@@ -13,7 +16,10 @@ trait Reader {
 }
 
 object Reader {
+  trait Result {
+    def offset: Current
+    def data: Array[Byte]
+  }
 
-  case class ReadResult(offset: Long, data: Array[Byte])
-
+  case class ReadResult(offset: Current, data: Array[Byte]) extends Result
 }

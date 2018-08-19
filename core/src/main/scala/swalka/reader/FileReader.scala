@@ -4,6 +4,7 @@ import java.io.FileInputStream
 import java.nio.file.Path
 
 import swalka.Record
+import swalka.offset.Offset.Current
 import swalka.reader.Reader.ReadResult
 
 class FileReader(path: Path, segment: Int, initalOffset: Long) extends Reader {
@@ -14,10 +15,12 @@ class FileReader(path: Path, segment: Int, initalOffset: Long) extends Reader {
   private var offset: Long = initalOffset
   in.skip(initalOffset)
 
+  override type R = Reader.ReadResult
+
   override def next: Reader.ReadResult = {
     val (totalLength, data) = Record.fromChannel(channel)
     offset += totalLength
-    ReadResult(offset, data.data)
+    ReadResult(Current(segment, offset), data.data)
   }
 
   def hasNext: Boolean = in.available() > 0

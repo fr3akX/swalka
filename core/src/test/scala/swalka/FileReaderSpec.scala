@@ -19,7 +19,7 @@ class FileReaderSpec extends FlatSpec with Matchers {
           val c = reader.next
           println(s"from ofset: ${offset.current}, " + c.offset + " " + new String(c.data))
           reader.close
-          offset.commit(Current(0, c.offset))
+          offset.commit(c.offset)
 
           incrementallyRead()
         } else {

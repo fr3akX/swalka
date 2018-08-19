@@ -1,46 +1,43 @@
 package swalka
 
-import java.nio.file.{FileSystems, Path, Paths, StandardWatchEventKinds}
+import java.nio.file.Paths
+import java.util.concurrent.Executors
 
 import swalka.offset.FileOffset
 import swalka.offset.Offset.Current
-import swalka.reader.FileReader
-
-import scala.collection.JavaConverters._
+import swalka.reader.SegmentedReader
+import swalka.watch.Watcher
 
 object ReaderApp extends App {
-  val offset = new FileOffset(Paths.get("."))
 
-  println(s"current offset: ${offset.current}")
-  val reader = new FileReader(Paths.get("."), 0, offset.current.pos)
-  val ws = FileSystems.getDefault.newWatchService()
+  val dbPath = Paths.get("./benchmark/target")
+  val currentExec = Executors.newSingleThreadExecutor()
 
+  val watcher = new Watcher(dbPath)
 
-  def waitModification(): Unit = {
-    val path = Paths.get(".")
-    val watchKey = path.register(ws, StandardWatchEventKinds.ENTRY_MODIFY)
-    println("Waiting for events")
-    val wk = ws.take()
-    if(wk.pollEvents().asScala.map(_.context().asInstanceOf[Path]).exists(_.endsWith("journal.log"))){
-      wk.reset()
-    } else {
-      waitModification()
-    }
+  watcher.registerEventHandler { p =>
+    println(s"Event on: ${p.toString}")
+    currentExec.execute(() => doRead())
   }
 
   def doRead(): Unit = {
-    if(reader.hasNext) {
-      val n = reader.next
-      println(s"Commiting offset: ${n.offset}")
-      offset.commit(Current(0, n.offset))
-      doRead()
-    } else {
-      println("busy looping")
-      waitModification()
-      doRead()
+    println("Doing read")
+
+    val offset = new FileOffset(dbPath)
+    println(s"current offset: ${offset.current}")
+    val reader = new SegmentedReader(dbPath, offset.current)
+
+    var current: Current = Current(0, 0)
+    while (reader.hasNext) {
+      val nextRec = reader.next
+//      println(s"Commiting coffset ${nextRec.offset}")
+      offset.commit(nextRec.offset)
+      current = nextRec.offset
     }
+    offset.close
+    reader.close
+    println(s"Done reading, last offset: $current")
   }
 
-
-  doRead()
+  currentExec.execute(() => doRead())
 }

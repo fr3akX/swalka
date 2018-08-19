@@ -1,11 +1,9 @@
 package swalka.reader
 
-import swalka.reader.Reader.ReadResult
-
-class ReaderIterator(reader: Reader) extends Iterator[ReadResult] {
+class ReaderIterator(reader: Reader) extends Iterator[Reader#R] {
   override def hasNext: Boolean = reader.hasNext
 
-  override def next(): ReadResult = reader.next
+  override def next(): Reader#R = reader.next
 
   def close(): Unit = reader.close
 }
