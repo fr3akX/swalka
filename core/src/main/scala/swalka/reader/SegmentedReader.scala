@@ -5,7 +5,7 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 import swalka.Segment
 import swalka.offset.Offset.Current
 
-class SegmentedReader(path: Path, readFrom: Current) extends Reader {
+class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Result] {
   private val segmentReadChannel = Files.newByteChannel(Segment.path(path), StandardOpenOption.READ)
 
   private var currentSegment :: rest = Segment
@@ -24,8 +24,6 @@ class SegmentedReader(path: Path, readFrom: Current) extends Reader {
       rest = t
       currentLog = new FileReader(path, currentSegment.num, 0)
   }
-
-  override type R = Reader.ReadResult
 
   override def next: Reader.ReadResult = currentLog.next
 

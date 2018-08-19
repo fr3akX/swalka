@@ -5,8 +5,7 @@ import swalka.reader.Reader.Result
 
 import scala.language.higherKinds
 
-trait Reader {
-  type R <: Result
+trait Reader[R <: Result] {
 
   def next: R
 

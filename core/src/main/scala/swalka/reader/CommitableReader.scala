@@ -3,9 +3,7 @@ package swalka.reader
 import swalka.offset.Offset
 import swalka.reader.CommitableReader.CommitableResult
 
-class CommitableReader(reader: Reader, offset: Offset) extends Reader {
-  override type R = CommitableResult
-
+class CommitableReader[R <: Reader.Result](reader: Reader[R], offset: Offset) extends Reader[CommitableResult] {
   override def next: CommitableResult = {
     val res: Reader.Result = reader.next
     CommitableResult(() => offset.commit(res.offset), res)

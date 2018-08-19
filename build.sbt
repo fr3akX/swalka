@@ -8,9 +8,7 @@ lazy val core = project
   .in(file("core"))
   .settings(
     moduleName := "core",
-    libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.0.5" % "test"
-    )
+    libraryDependencies += Library.scalaTest
   )
   .settings(defaultSettings)
 
@@ -18,7 +16,7 @@ lazy val test = project
   .in(file("test"))
   .settings(moduleName := "test")
   .settings(defaultSettings)
-  .dependsOn(core)
+  .dependsOn(core, `akka-streams`)
 
 lazy val benchmark = project
   .in(file("benchmark"))
@@ -32,7 +30,7 @@ lazy val `akka-streams` = project
   .settings(moduleName := "akka-streams")
   .settings(defaultSettings)
   .settings(
-    libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.14"
+    libraryDependencies ++= Library.akka
   )
   .dependsOn(core)
 
