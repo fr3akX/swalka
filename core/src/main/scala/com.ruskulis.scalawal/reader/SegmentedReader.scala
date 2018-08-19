@@ -4,11 +4,15 @@ import java.nio.file.{Files, Path, StandardOpenOption}
 
 import cats.Id
 import com.ruskulis.scalawal.Segment
+import com.ruskulis.scalawal.reader.SegmentedReader.ReadFrom
 
-class SegmentedReader(path: Path) extends Reader[Id] {
+class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader[Id] {
   private val segmentReadChannel = Files.newByteChannel(Segment.path(path), StandardOpenOption.READ)
 
-  var currentSegment :: rest = Segment.readAll(segmentReadChannel).reverse
+  var currentSegment :: rest = Segment
+    .readAll(segmentReadChannel)
+    .takeWhile(_.num >= readFrom.segment).reverse
+
   var currentLog = new FileReader(path, currentSegment.num, 0)
 
 
@@ -36,4 +40,9 @@ class SegmentedReader(path: Path) extends Reader[Id] {
     segmentReadChannel.close()
     currentLog.close
   }
+}
+
+object SegmentedReader {
+  val Beginning = ReadFrom(0, 0)
+  case class ReadFrom(segment: Int, offset: Long)
 }

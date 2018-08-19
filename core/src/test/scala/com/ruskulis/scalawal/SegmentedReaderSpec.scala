@@ -9,7 +9,7 @@ class SegmentedReaderSpec extends FlatSpec with Matchers {
 
   //segment size 1, forces every item in new segment
   it should "be able to read segmented log" in Util.withSegmentedLog(seedData, 1) { dir =>
-    val rdr = new SegmentedReader(dir)
+    val rdr = new SegmentedReader(dir, SegmentedReader.Beginning)
     var result = List.empty[String]
     def doRead(): Unit = {
       if(rdr.hasNext) {
