@@ -2,11 +2,10 @@ package com.ruskulis.scalawal.reader
 
 import java.nio.file.{Files, Path, StandardOpenOption}
 
-import cats.Id
 import com.ruskulis.scalawal.Segment
 import com.ruskulis.scalawal.reader.SegmentedReader.ReadFrom
 
-class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader[Id] {
+class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader {
   private val segmentReadChannel = Files.newByteChannel(Segment.path(path), StandardOpenOption.READ)
 
   var currentSegment :: rest = Segment
@@ -25,9 +24,9 @@ class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader[Id] {
       currentLog = new FileReader(path, currentSegment.num, 0)
   }
 
-  override def next: Id[Reader.ReadResult] = currentLog.next
+  override def next: Reader.ReadResult = currentLog.next
 
-  override def hasNext: Id[Boolean] = {
+  override def hasNext: Boolean = {
     val hn = currentLog.hasNext
     if(hn) hn
     else {
@@ -36,7 +35,7 @@ class SegmentedReader(path: Path, readFrom: ReadFrom) extends Reader[Id] {
     }
   }
 
-  override def close: Id[Unit] = {
+  override def close: Unit = {
     segmentReadChannel.close()
     currentLog.close
   }

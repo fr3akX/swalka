@@ -4,10 +4,10 @@ import com.ruskulis.scalawal.reader.Reader.ReadResult
 
 import scala.language.higherKinds
 
-trait Reader[F[_]] {
-  def next: F[ReadResult]
-  def hasNext: F[Boolean]
-  def close: F[Unit]
+trait Reader {
+  def next: ReadResult
+  def hasNext: Boolean
+  def close: Unit
 }
 
 object Reader {

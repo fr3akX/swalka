@@ -3,11 +3,10 @@ package com.ruskulis.scalawal.writer
 import java.nio.ByteBuffer
 import java.nio.file.{Files, Path, StandardOpenOption}
 
-import cats.Id
 import com.ruskulis.scalawal.Segment
 
 
-class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer[Id] {
+class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer {
 
   println(s"Opening segments: ${Segment.path(path).toAbsolutePath.toString}")
   private val c = Files.newByteChannel(Segment.path(path), StandardOpenOption.DSYNC, StandardOpenOption.SYNC,StandardOpenOption.READ,
@@ -39,19 +38,19 @@ class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer[Id] {
   }
 
   @inline
-  override def write(data: ByteBuffer): Id[Unit] = {
+  override def write(data: ByteBuffer): Unit = {
     if(size >= maxBytesPerSegment) newSegment
     writer.write(data)
     size += data.capacity()
   }
 
-  override def flush: Id[Unit] = {
+  override def flush: Unit = {
     writer.flush
 //    c.force(true)
 //    fos.getFD.sync()
   }
 
-  override def close: Id[Unit] = {
+  override def close: Unit = {
     c.close()
 //    fos.close()
     writer.close

@@ -9,7 +9,6 @@ lazy val core = project
   .settings(
     moduleName := "core",
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % "1.0.0-RC2",
       "org.scalatest" %% "scalatest" % "3.0.5" % "test"
     )
   )

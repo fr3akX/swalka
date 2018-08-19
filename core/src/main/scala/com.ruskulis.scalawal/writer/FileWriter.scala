@@ -4,10 +4,7 @@ import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.nio.file.{Path, Paths}
 
-import cats.Id
-
-
-class FileWriter(path: Path, segment: Int) extends Writer[Id] {
+class FileWriter(path: Path, segment: Int) extends Writer {
 
   private val fos = new FileOutputStream(Paths.get(path.toString, s"journal.$segment").toAbsolutePath.toString, true)
   private val c = fos.getChannel
@@ -21,7 +18,7 @@ class FileWriter(path: Path, segment: Int) extends Writer[Id] {
     c.force(true)
     fos.getFD.sync()
   }
-  override def close: Id[Unit] = {
+  override def close: Unit = {
     c.close()
     fos.close()
   }

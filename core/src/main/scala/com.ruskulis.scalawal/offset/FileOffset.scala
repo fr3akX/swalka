@@ -1,12 +1,11 @@
 package com.ruskulis.scalawal.offset
 
 import java.nio.ByteBuffer
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, StandardOpenOption}
 
-import cats.Id
 import com.ruskulis.scalawal._
 
-class FileOffset(path: Path) extends Offset[Id] {
+class FileOffset(path: Path) extends Offset {
 
   private val offset = path.resolve("offset")
   private val fos = Files.newByteChannel(
@@ -16,16 +15,16 @@ class FileOffset(path: Path) extends Offset[Id] {
     StandardOpenOption.WRITE
   )
 
-  override def commit(pos: Long): Id[Unit] = {
+  override def commit(pos: Long): Unit = {
     fos.position(0)
-    val ll =  ByteBuffer.allocate(longSize)
+    val ll = ByteBuffer.allocate(longSize)
     ll.putLong(pos)
     ll.flip()
     fos.write(ll)
   }
 
-  override def current: Id[Long] = {
-    if(fos.size() == 0) 0L
+  override def current: Long = {
+    if (fos.size() == 0) 0L
     else {
       val buf = ByteBuffer.allocate(longSize)
       fos.position(0)
@@ -35,7 +34,7 @@ class FileOffset(path: Path) extends Offset[Id] {
     }
   }
 
-  def close: Id[Unit] = {
+  def close: Unit = {
     fos.close()
   }
 
