@@ -7,3 +7,11 @@ The Flow would be:
  1. [main app logic] -> [side effect description] -> [wal]
  2. [wal] -> [wal processor] -> [sideffect execution attempt] -> [offset commit]
 
+## Benchmark
+```text
+Benchmark                                          Mode  Cnt    Score   Error   Units
+ACoordinatorWriterBenchmark.walWriteWithFlush     thrpt        12.323          ops/ms
+ACoordinatorWriterBenchmark.walWriteWithoutFlush  thrpt       170.620          ops/ms
+AWriterBenchmark.walWriteWithFlush                thrpt        11.796          ops/ms
+AWriterBenchmark.walWriteWithoutFlush             thrpt       173.709          ops/ms
+```
