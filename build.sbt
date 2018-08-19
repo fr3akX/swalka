@@ -27,9 +27,15 @@ lazy val benchmark = project
   .enablePlugins(JmhPlugin)
   .dependsOn(core)
 
-lazy val root = Project("scalawal", file("."))
-  .settings(moduleName := "scalawal")
+lazy val server = project
+  .in(file("server"))
+  .settings(moduleName := "server")
   .settings(defaultSettings)
-  .aggregate(core, test, benchmark)
+  .dependsOn(core)
+
+lazy val root = Project("swalka", file("."))
+  .settings(moduleName := "swalka")
+  .settings(defaultSettings)
+  .aggregate(core, test, benchmark, server)
 
 addCommandAlias("bench", "; project benchmark; jmh:run -i 1 -wi 3 -f1 -t1")
