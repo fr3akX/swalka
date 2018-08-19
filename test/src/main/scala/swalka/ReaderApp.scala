@@ -3,14 +3,16 @@ package swalka
 import java.nio.file.{FileSystems, Path, Paths, StandardWatchEventKinds}
 
 import swalka.offset.FileOffset
+import swalka.offset.Offset.Current
 import swalka.reader.FileReader
+
 import scala.collection.JavaConverters._
 
 object ReaderApp extends App {
   val offset = new FileOffset(Paths.get("."))
 
   println(s"current offset: ${offset.current}")
-  val reader = new FileReader(Paths.get("."), 0, offset.current)
+  val reader = new FileReader(Paths.get("."), 0, offset.current.pos)
   val ws = FileSystems.getDefault.newWatchService()
 
 
@@ -30,7 +32,7 @@ object ReaderApp extends App {
     if(reader.hasNext) {
       val n = reader.next
       println(s"Commiting offset: ${n.offset}")
-      offset.commit(n.offset)
+      offset.commit(Current(0, n.offset))
       doRead()
     } else {
       println("busy looping")

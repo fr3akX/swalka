@@ -2,6 +2,7 @@ package swalka
 
 import org.scalatest.{FlatSpec, Matchers}
 import swalka.offset.FileOffset
+import swalka.offset.Offset.Current
 import swalka.reader.FileReader
 
 class FileReaderSpec extends FlatSpec with Matchers {
@@ -12,13 +13,13 @@ class FileReaderSpec extends FlatSpec with Matchers {
 
       println(s"OFFSET: ${offset.current}")
       def incrementallyRead(): Unit = {
-        val reader = new FileReader(path, 0, offset.current)
+        val reader = new FileReader(path, 0, offset.current.pos)
 
         if(reader.hasNext) {
           val c = reader.next
           println(s"from ofset: ${offset.current}, " + c.offset + " " + new String(c.data))
           reader.close
-          offset.commit(c.offset)
+          offset.commit(Current(0, c.offset))
 
           incrementallyRead()
         } else {

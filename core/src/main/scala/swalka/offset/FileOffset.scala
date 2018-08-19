@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.file.{Files, Path, StandardOpenOption}
 
 import swalka._
+import swalka.offset.Offset.Current
 
 class FileOffset(path: Path) extends Offset {
 
@@ -15,22 +16,23 @@ class FileOffset(path: Path) extends Offset {
     StandardOpenOption.WRITE
   )
 
-  override def commit(pos: Long): Unit = {
+  override def commit(offset: Current): Unit = {
     fos.position(0)
-    val ll = ByteBuffer.allocate(longSize)
-    ll.putLong(pos)
+    val ll = ByteBuffer.allocate(intSize + longSize)
+    ll.putInt(offset.segment)
+    ll.putLong(offset.pos)
     ll.flip()
     fos.write(ll)
   }
 
-  override def current: Long = {
-    if (fos.size() == 0) 0L
+  override def current: Current = {
+    if (fos.size() == 0) Current(0, 0L)
     else {
-      val buf = ByteBuffer.allocate(longSize)
+      val buf = ByteBuffer.allocate(intSize + longSize)
       fos.position(0)
       fos.read(buf)
       buf.flip()
-      buf.getLong()
+      Current(buf.getInt(), buf.getLong())
     }
   }
 

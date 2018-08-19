@@ -27,15 +27,18 @@ lazy val benchmark = project
   .enablePlugins(JmhPlugin)
   .dependsOn(core)
 
-lazy val server = project
-  .in(file("server"))
-  .settings(moduleName := "server")
+lazy val `akka-streams` = project
+  .in(file("akka-streams"))
+  .settings(moduleName := "akka-streams")
   .settings(defaultSettings)
+  .settings(
+    libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.14"
+  )
   .dependsOn(core)
 
 lazy val root = Project("swalka", file("."))
   .settings(moduleName := "swalka")
   .settings(defaultSettings)
-  .aggregate(core, test, benchmark, server)
+  .aggregate(core, test, benchmark, `akka-streams`)
 
 addCommandAlias("bench", "; project benchmark; jmh:run -i 1 -wi 3 -f1 -t1")
