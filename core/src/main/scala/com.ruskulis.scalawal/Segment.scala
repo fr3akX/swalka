@@ -1,16 +1,17 @@
-package com.ruskulis.scalawal.writer
+package com.ruskulis.scalawal
 
 import java.nio.ByteBuffer
 import java.nio.channels.SeekableByteChannel
+import java.nio.file.Path
 import java.time.Instant
-
-import com.ruskulis.scalawal.{intSize, longSize}
 
 import scala.annotation.tailrec
 
 case class Segment(num: Int, closedAt: Option[Instant])
 
 object Segment {
+
+  def path(root: Path): Path = root.resolve("segments")
 
   val segmentSize = intSize + longSize
 

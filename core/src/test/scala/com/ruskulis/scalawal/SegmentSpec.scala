@@ -3,7 +3,6 @@ package com.ruskulis.scalawal
 import java.nio.channels.SeekableByteChannel
 import java.nio.file.{Files, StandardOpenOption}
 
-import com.ruskulis.scalawal.writer.Segment
 import org.scalatest.{Assertion, FlatSpec, Matchers}
 
 import scala.util.Try

@@ -1,16 +1,16 @@
 package com.ruskulis.scalawal.writer
 
-import java.io.FileOutputStream
 import java.nio.ByteBuffer
-import java.nio.file.{Files, Path, Paths, StandardOpenOption}
+import java.nio.file.{Files, Path, StandardOpenOption}
 
 import cats.Id
+import com.ruskulis.scalawal.Segment
 
 
-class WriterCoordinator(path: Path, maxBytesPerSegment: Long) extends Writer[Id] {
+class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer[Id] {
 
-  println(s"Opening segments: ${path.resolve("segments").toAbsolutePath.toString}")
-  private val c = Files.newByteChannel(path.resolve("segments"), StandardOpenOption.DSYNC, StandardOpenOption.SYNC,StandardOpenOption.READ,
+  println(s"Opening segments: ${Segment.path(path).toAbsolutePath.toString}")
+  private val c = Files.newByteChannel(Segment.path(path), StandardOpenOption.DSYNC, StandardOpenOption.SYNC,StandardOpenOption.READ,
     StandardOpenOption.WRITE, StandardOpenOption.CREATE)
   //private val fos = new FileOutputStream(path.resolve("segments").toAbsolutePath.toString, true)
   //private val c = fos.getChannel

@@ -3,7 +3,7 @@ package com.ruskulis.scalawal
 import java.util.concurrent.TimeUnit
 
 import com.ruskulis.scalawal.AWriterBenchmark._
-import com.ruskulis.scalawal.writer.{FileWriter, WriterCoordinator}
+import com.ruskulis.scalawal.writer.{FileWriter, SegmentedWriter}
 import org.openjdk.jmh.annotations._
 
 import scala.io.Source
@@ -25,5 +25,5 @@ class ACoordinatorWriterBenchmark {
 
 object ACoordinatorWriterBenchmark {
   val rec = Record.wrap(Source.fromResource("small.json").mkString.getBytes())
-  lazy val writer = new WriterCoordinator(ReaderBenchmark.targetPath, 1024 * 1024 * 1024 * 1)
+  lazy val writer = new SegmentedWriter(ReaderBenchmark.targetPath, 1024 * 1024 * 1024 * 1)
 }
