@@ -1,9 +1,9 @@
 package swalka.reader
 
 import swalka.offset.Offset
-import swalka.reader.CommittableReader.CommitableResult
+import swalka.reader.CommitableReader.CommitableResult
 
-class CommittableReader(reader: Reader, offset: Offset) extends Reader {
+class CommitableReader(reader: Reader, offset: Offset) extends Reader {
   override type R = CommitableResult
 
   override def next: CommitableResult = {
@@ -13,10 +13,10 @@ class CommittableReader(reader: Reader, offset: Offset) extends Reader {
 
   override def hasNext: Boolean = reader.hasNext
 
-  override def close: Unit = reader.close
+  override def close: Unit = {}
 }
 
-object CommittableReader {
+object CommitableReader {
   case class CommitableResult(commit: () => Unit,  rr: Reader.Result) extends Reader.Result {
     override val offset: Offset.Current = rr.offset
     override val data: Array[Byte] = rr.data
