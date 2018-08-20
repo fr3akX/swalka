@@ -15,7 +15,6 @@ class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Resul
 
   private var currentLog = new FileReader(path, currentSegment.num, readFrom.pos)
 
-
   private def openNext = rest match {
     case Nil =>
       logger.debug("No next log, reached oef")

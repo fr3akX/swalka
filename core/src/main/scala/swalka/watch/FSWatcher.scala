@@ -7,7 +7,7 @@ import java.util.concurrent.{Executors, TimeUnit}
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 
-class Watcher(path: Path) {
+class FSWatcher(path: Path) {
 
   @volatile
   private var isCanceled = false

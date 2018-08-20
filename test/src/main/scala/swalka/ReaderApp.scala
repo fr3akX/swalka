@@ -7,6 +7,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.StrictLogging
 import swalka.streams.WatchedReaderSourceStage
+import swalka.watch.FSWatcher
 
 object ReaderApp extends App with StrictLogging {
 
@@ -21,7 +22,8 @@ object ReaderApp extends App with StrictLogging {
   }
 
   val dbPath = Paths.get("./benchmark/target")
-  val readerSource = Source.fromGraph(new WatchedReaderSourceStage("app", dbPath))
+  val watcher = new FSWatcher(dbPath)
+  val readerSource = Source.fromGraph(new WatchedReaderSourceStage("app", dbPath, watcher.registerEventHandler))
   val end = readerSource.runForeach { s =>
     logger.debug(new String(s.data))
     s.commit()
