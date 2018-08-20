@@ -5,9 +5,10 @@ import java.nio.file.Paths
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
+import com.typesafe.scalalogging.StrictLogging
 import swalka.streams.WatchedReaderSourceStage
 
-object ReaderApp extends App {
+object ReaderApp extends App with StrictLogging {
 
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
@@ -22,7 +23,7 @@ object ReaderApp extends App {
   val dbPath = Paths.get("./benchmark/target")
   val readerSource = Source.fromGraph(new WatchedReaderSourceStage("app", dbPath))
   val end = readerSource.runForeach { s =>
-    println(new String(s.data))
+    logger.debug(new String(s.data))
     s.commit()
   }
 

@@ -15,8 +15,6 @@ object WriterApp extends App {
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
 
-  import system.dispatcher
-
   sys.addShutdownHook {
     mat.shutdown()
     system.terminate()
@@ -26,9 +24,5 @@ object WriterApp extends App {
   val writerSink = Sink.fromGraph(new WriterSinkStage(new SegmentedWriter(dbPath, 1024 * 1024 * 1)))
   Source.tick(1.second, 1.second, s"Hello world ${Instant.now().toString}")
     .map(s => Record.wrap(s.getBytes()))
-    .map { r =>
-      println("Writing")
-      r
-    }
     .to(writerSink).run()
 }

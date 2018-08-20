@@ -2,7 +2,7 @@ package swalka.streams
 
 import java.nio.file.Path
 
-import akka.stream.stage.{AsyncCallback, GraphStage, GraphStageLogic, OutHandler}
+import akka.stream.stage._
 import akka.stream.{Attributes, Outlet, SourceShape}
 import swalka.offset.FileOffset
 import swalka.reader.CommitableReader.CommitableResult
@@ -20,7 +20,7 @@ class WatchedReaderSourceStage(readerId: String, dbPath: Path) extends GraphStag
 
   override def shape: SourceShape[CommitableResult] = SourceShape(out)
 
-  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) with StageLogging {
 
     var offset = new FileOffset(readerId, dbPath)
     var segReader = new SegmentedReader(dbPath, offset.current)
@@ -35,7 +35,8 @@ class WatchedReaderSourceStage(readerId: String, dbPath: Path) extends GraphStag
     })
 
     def reloadOnEof() = {
-      if(!reader.hasNext) {
+      if(!reader.hasNext) { // && reader.isEof
+        log.debug("Log is has no next, probably eof, trying reopen segments")
         offset.close
         segReader.close
         reader.close
@@ -43,8 +44,11 @@ class WatchedReaderSourceStage(readerId: String, dbPath: Path) extends GraphStag
         offset = new FileOffset(readerId, dbPath)
         segReader = new SegmentedReader(dbPath, offset.current)
         reader = new CommitableReader(segReader, offset)
+
+        log.debug(s"Reading log from ${offset.current}")
       }
       if(reader.hasNext && downStreamDemands && isAvailable(out)) {
+        log.debug("Emiting output")
         downStreamDemands = false
         push(out, reader.next)
       }
@@ -53,12 +57,19 @@ class WatchedReaderSourceStage(readerId: String, dbPath: Path) extends GraphStag
     val watcher = new Watcher(dbPath)
     val pollCB: AsyncCallback[Unit] = getAsyncCallback[Unit] { _ => reloadOnEof() }
 
-    watcher.registerEventHandler { p =>
-      println(s"Event on: ${p.toString}")
-      pollCB.invoke()
+
+    override def preStart(): Unit = {
+      super.preStart()
+      log.debug(s"Initialized, reading from: ${offset.current}")
+      log.debug("Registering watcher")
+      watcher.registerEventHandler { p =>
+        log.debug(s"Event on: ${p.toString}")
+        pollCB.invoke()
+      }
     }
 
     override def postStop(): Unit = {
+      log.debug("Stopping stage")
       watcher.close()
       offset.close
       reader.close

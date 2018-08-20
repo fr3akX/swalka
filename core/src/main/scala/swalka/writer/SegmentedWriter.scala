@@ -3,12 +3,14 @@ package swalka.writer
 import java.nio.ByteBuffer
 import java.nio.file.{Files, Path, StandardOpenOption}
 
+import com.typesafe.scalalogging.LazyLogging
 import swalka.Segment
 
 
-class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer {
+class SegmentedWriter(path: Path, maxBytesPerSegment: Long) extends Writer with LazyLogging {
 
-  println(s"Opening segments: ${Segment.path(path).toAbsolutePath.toString}")
+  logger.debug(s"Opening segments: ${Segment.path(path).toAbsolutePath.toString}")
+
   private val c = Files.newByteChannel(Segment.path(path), StandardOpenOption.DSYNC, StandardOpenOption.SYNC,StandardOpenOption.READ,
     StandardOpenOption.WRITE, StandardOpenOption.CREATE)
   //private val fos = new FileOutputStream(path.resolve("segments").toAbsolutePath.toString, true)

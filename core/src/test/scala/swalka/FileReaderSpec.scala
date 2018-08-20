@@ -1,32 +1,34 @@
 package swalka
 
+import com.typesafe.scalalogging.StrictLogging
 import org.scalatest.{FlatSpec, Matchers}
 import swalka.offset.FileOffset
 import swalka.reader.FileReader
 
-class FileReaderSpec extends FlatSpec with Matchers {
+class FileReaderSpec extends FlatSpec with Matchers with StrictLogging {
 
   it should "be able to read written log from beginning" in Util.withWrittenLog { path =>
 
-      val offset = new FileOffset("test", path)
+    val offset = new FileOffset("test", path)
 
-      println(s"OFFSET: ${offset.current}")
-      def incrementallyRead(): Unit = {
-        val reader = new FileReader(path, 0, offset.current.pos)
+    logger.debug(s"OFFSET: ${offset.current}")
 
-        if(reader.hasNext) {
-          val c = reader.next
-          println(s"from ofset: ${offset.current}, " + c.offset + " " + new String(c.data))
-          reader.close
-          offset.commit(c.offset)
+    def incrementallyRead(): Unit = {
+      val reader = new FileReader(path, 0, offset.current.pos)
 
-          incrementallyRead()
-        } else {
-          reader.close
-        }
+      if (reader.hasNext) {
+        val c = reader.next
+        logger.debug(s"from ofset: ${offset.current}, " + c.offset + " " + new String(c.data))
+        reader.close
+        offset.commit(c.offset)
+
+        incrementallyRead()
+      } else {
+        reader.close
       }
+    }
 
-      incrementallyRead()
-      succeed
+    incrementallyRead()
+    succeed
   }
 }

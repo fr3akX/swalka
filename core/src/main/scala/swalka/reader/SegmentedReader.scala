@@ -2,10 +2,11 @@ package swalka.reader
 
 import java.nio.file.{Files, Path, StandardOpenOption}
 
+import com.typesafe.scalalogging.StrictLogging
 import swalka.Segment
 import swalka.offset.Offset.Current
 
-class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Result] {
+class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Result] with StrictLogging {
   private val segmentReadChannel = Files.newByteChannel(Segment.path(path), StandardOpenOption.READ)
 
   private var currentSegment :: rest = Segment
@@ -17,9 +18,9 @@ class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Resul
 
   private def openNext = rest match {
     case Nil =>
-      println("No next log, reached oef")
+      logger.debug("No next log, reached oef")
     case h :: t =>
-      println(s"Found next log $h $t")
+      logger.debug(s"Found next log $h $t")
       currentSegment = h
       rest = t
       currentLog = new FileReader(path, currentSegment.num, 0)
@@ -31,7 +32,7 @@ class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Resul
     val hn = currentLog.hasNext
     if(hn) hn
     else {
-      println(s"openining next log, from current: $currentSegment")
+      logger.debug(s"openining next log, from current: $currentSegment")
       openNext
       currentLog.hasNext
     }

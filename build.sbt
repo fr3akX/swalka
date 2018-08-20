@@ -8,7 +8,7 @@ lazy val core = project
   .in(file("core"))
   .settings(
     moduleName := "core",
-    libraryDependencies += Library.scalaTest
+    libraryDependencies ++= Library.logging :+ Library.scalaTest
   )
   .settings(defaultSettings)
 
