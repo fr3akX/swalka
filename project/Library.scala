@@ -3,7 +3,8 @@ import sbt._
 object Library {
   val akka = Seq(
     "com.typesafe.akka" %% "akka-stream",
-    "com.typesafe.akka" %% "akka-actor"
+    "com.typesafe.akka" %% "akka-actor",
+    "com.typesafe.akka" %% "akka-slf4j"
   ).map(_ % "2.5.14")
   val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5" % "test"
   val logging = Seq(
