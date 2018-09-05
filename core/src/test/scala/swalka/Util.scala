@@ -2,7 +2,7 @@ package swalka
 
 import java.nio.file.{Files, Path}
 import java.time.LocalTime
-
+import scala.concurrent.duration._
 import swalka.writer.{FileWriter, SegmentedWriter}
 
 object Util {
@@ -14,7 +14,7 @@ object Util {
   }
 
   def withSegmentedLog[A](inputs: Iterable[String], segmentSize: Long)(f: Path => A): A = withTempDir { path =>
-    val fw = new SegmentedWriter(path, segmentSize)
+    val fw = new SegmentedWriter(path, segmentSize, 10.minutes)
 
     inputs.map(_.getBytes()).map(Record.wrap).map(Record.toByteBuffer).foreach(fw.write)
     fw.close

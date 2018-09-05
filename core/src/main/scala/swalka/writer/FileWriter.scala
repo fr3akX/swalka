@@ -4,9 +4,11 @@ import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.nio.file.{Path, Paths}
 
+import swalka.Journal
+
 class FileWriter(path: Path, segment: Int) extends Writer {
 
-  private val fos = new FileOutputStream(Paths.get(path.toString, s"journal.$segment").toAbsolutePath.toString, true)
+  private val fos = new FileOutputStream(Paths.get(path.toString, Journal.segment(segment)).toAbsolutePath.toString, true)
   private val c = fos.getChannel
 
   override def write(data: ByteBuffer): Unit = {

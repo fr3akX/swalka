@@ -7,6 +7,7 @@ import org.openjdk.jmh.annotations._
 import swalka.writer.SegmentedWriter
 
 import scala.io.Source
+import scala.concurrent.duration._
 
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
@@ -25,5 +26,5 @@ class ACoordinatorWriterBenchmark {
 
 object ACoordinatorWriterBenchmark {
   val rec = Record.wrap(Source.fromResource("small.json").mkString.getBytes())
-  lazy val writer = new SegmentedWriter(ReaderBenchmark.targetPath, 1024 * 1024 * 1024 * 1)
+  lazy val writer = new SegmentedWriter(ReaderBenchmark.targetPath, 1024 * 1024 * 1024 * 1, 60.seconds)
 }

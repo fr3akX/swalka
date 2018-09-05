@@ -3,9 +3,10 @@ package swalka
 import java.nio.ByteBuffer
 import java.nio.channels.SeekableByteChannel
 import java.nio.file.Path
-import java.time.Instant
+import java.time.{Duration, Instant}
 
 import scala.annotation.tailrec
+import scala.concurrent.duration.FiniteDuration
 
 case class Segment(num: Int, closedAt: Option[Instant])
 
@@ -34,6 +35,24 @@ object Segment {
 
     Segment(segmentNum, segmentClosedAt)
   }
+
+  def rewrite(segments: List[Segment], bc: SeekableByteChannel): Unit = {
+    bc.truncate(0)
+
+    val allocSize = segments.map(_.closedAt.fold(intSize)(_ => intSize + longSize)).sum
+    val bl = ByteBuffer.allocate(allocSize)
+
+    segments.reverse.foreach { seg =>
+      bl.putInt(seg.num)
+      seg.closedAt.foreach(t => bl.putLong(t.toEpochMilli))
+    }
+    bl.flip()
+    bc.write(bl)
+  }
+
+  def invalidate(segment: List[Segment], maxAge: FiniteDuration): List[Segment] =
+    segment
+      .filter(_.closedAt.forall(ts => Duration.between(ts, Instant.now()).getSeconds < maxAge.toSeconds))
 
   def closeSegment(segments: List[Segment], bc: SeekableByteChannel): List[Segment] = {
     val lastSeg :: ll = segments

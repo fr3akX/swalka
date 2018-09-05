@@ -2,13 +2,14 @@ package swalka
 
 import java.nio.file.Paths
 import java.time.Instant
+import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import com.typesafe.scalalogging.StrictLogging
 import swalka.streams.{PersistentWriterFlow, WatchedReaderFlow}
-import swalka.writer.SegmentedWriter
+import swalka.writer.{HouseKeeper, SegmentedWriter}
 
 import scala.concurrent.duration._
 
@@ -25,7 +26,11 @@ object CombinedApp extends App with StrictLogging {
 
   val dbPath = Paths.get("./benchmark/target")
 
-  val persistentWriterFlow = new PersistentWriterFlow(new SegmentedWriter(dbPath, 1024 * 1024 * 1))
+  val exec = Executors.newSingleThreadScheduledExecutor()
+  val houseKeeper = new HouseKeeper(dbPath, exec, 1.minute)
+  val cancellation = houseKeeper.start()
+
+  val persistentWriterFlow = new PersistentWriterFlow(new SegmentedWriter(dbPath, 1024 * 1, 10.minutes))
   val readerFlow = new WatchedReaderFlow("app", dbPath)
 
   val run = Source.tick(1.second, 1.second, s"Hello world ${ Instant.now().toString }")
@@ -39,6 +44,7 @@ object CombinedApp extends App with StrictLogging {
 
   run.onComplete { x =>
     println("Comlpleted: " + x)
+    cancellation.close()
   }
 
 }

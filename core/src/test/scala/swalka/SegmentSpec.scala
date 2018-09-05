@@ -2,10 +2,12 @@ package swalka
 
 import java.nio.channels.SeekableByteChannel
 import java.nio.file.{Files, StandardOpenOption}
+import java.time.Instant
 
 import org.scalatest.{Assertion, FlatSpec, Matchers}
 
 import scala.util.Try
+import scala.concurrent.duration._
 
 class SegmentSpec extends FlatSpec with Matchers {
 
@@ -52,6 +54,22 @@ class SegmentSpec extends FlatSpec with Matchers {
     val closed :: rest = Segment.closeSegment(newSegments, bc)
     closed.closedAt shouldBe defined
     closed :: rest
+  }
+
+  it should "be able to invalidate segments" in {
+    val segments = List(
+      Segment(0, Some(Instant.now().minusSeconds(300))),
+      Segment(1, Some(Instant.now().minusSeconds(200))),
+      Segment(2, None)
+    )
+
+    Segment.invalidate(segments, 250.seconds) shouldBe segments.tail
+  }
+
+  it should "be able to rewrite segmets" in withRecoveryTest { bc =>
+    val segments = Segment.readAll(bc)
+    Segment.rewrite(segments, bc)
+    segments
   }
 
 }
