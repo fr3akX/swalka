@@ -19,12 +19,12 @@ class FileReaderSpec extends FlatSpec with Matchers with StrictLogging {
       if (reader.hasNext) {
         val c = reader.next
         logger.debug(s"from ofset: ${offset.current}, " + c.offset + " " + new String(c.data))
-        reader.close
+        reader.close()
         offset.commit(c.offset)
 
         incrementallyRead()
       } else {
-        reader.close
+        reader.close()
       }
     }
 

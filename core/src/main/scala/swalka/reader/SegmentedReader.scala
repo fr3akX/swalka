@@ -37,9 +37,9 @@ class SegmentedReader(path: Path, readFrom: Current) extends Reader[Reader.Resul
     }
   }
 
-  override def close: Unit = {
+  override def close(): Unit = {
     segmentReadChannel.close()
-    currentLog.close
+    currentLog.close()
   }
 }
 

@@ -11,7 +11,7 @@ class OffsetSpec extends FlatSpec with Matchers {
 
     offset.current shouldBe Current(0, 0)
     offset.commit(Current(99, 1000L))
-    offset.close
+    offset.close()
     new FileOffset("test", path).current shouldBe Current(99, 1000L)
   }
 }

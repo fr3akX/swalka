@@ -11,7 +11,7 @@ trait Reader[R <: Result] {
 
   def hasNext: Boolean
 
-  def close: Unit
+  def close(): Unit
 }
 
 object Reader {

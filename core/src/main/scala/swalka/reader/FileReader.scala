@@ -23,5 +23,5 @@ class FileReader(path: Path, segment: Int, initalOffset: Long) extends Reader[Re
 
   def hasNext: Boolean = in.available() > 0
 
-  override def close: Unit = in.close()
+  override def close(): Unit = in.close()
 }

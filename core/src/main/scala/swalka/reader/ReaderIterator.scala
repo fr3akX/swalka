@@ -5,5 +5,5 @@ class ReaderIterator[O <: Reader.Result](reader: Reader[O]) extends Iterator[O] 
 
     override def next(): O = reader.next
 
-    def close(): Unit = reader.close
+    def close(): Unit = reader.close()
 }

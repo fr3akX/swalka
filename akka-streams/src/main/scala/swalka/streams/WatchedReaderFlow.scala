@@ -64,9 +64,9 @@ class WatchedReaderFlow(readerId: String, dbPath: Path) extends GraphStage[FlowS
     def reloadOnEof() = {
       if(!reader.hasNext) { // && reader.isEof
         log.debug("Log is has no next, probably eof, trying reopen segments")
-        offset.close
-        segReader.close
-        reader.close
+        offset.close()
+        segReader.close()
+        reader.close()
 
         offset = new FileOffset(readerId, dbPath)
         segReader = new SegmentedReader(dbPath, offset.current)
@@ -88,9 +88,9 @@ class WatchedReaderFlow(readerId: String, dbPath: Path) extends GraphStage[FlowS
 
     override def postStop(): Unit = {
       log.debug("Stopping stage")
-      offset.close
-      reader.close
-      segReader.close
+      offset.close()
+      reader.close()
+      segReader.close()
       super.postStop()
     }
   }

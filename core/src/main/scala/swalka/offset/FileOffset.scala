@@ -36,7 +36,7 @@ class FileOffset(id: String, path: Path) extends Offset {
     }
   }
 
-  def close: Unit = {
+  def close(): Unit = {
     fos.close()
   }
 

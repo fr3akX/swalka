@@ -1,6 +1,6 @@
 
 val defaultSettings = Seq(
-  version := "0.1.4",
+  version := "0.1.5",
   scalaVersion := "2.12.6",
   organization := "swalka"
 )

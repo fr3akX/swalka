@@ -11,7 +11,7 @@ class CommitableReader[R <: Reader.Result](reader: Reader[R], offset: Offset) ex
 
   override def hasNext: Boolean = reader.hasNext
 
-  override def close: Unit = {}
+  override def close(): Unit = {}
 }
 
 object CommitableReader {
