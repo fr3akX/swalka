@@ -2,7 +2,7 @@ package swalka.streams
 
 import java.nio.ByteBuffer
 
-import akka.stream.javadsl.SourceQueueWithComplete
+import akka.stream.scaladsl.SourceQueueWithComplete
 import swalka.streams.WatchedReaderFlow.Notification
 import swalka.writer.Writer
 
