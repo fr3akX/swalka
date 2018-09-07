@@ -12,8 +12,8 @@ class SegmentedWriterSpec extends FlatSpec with Matchers with StrictLogging {
     val fw = new SegmentedWriter(path, 1024, 10.minutes)
     val record = Record.wrap(s"āžņīļ Current local time is ${LocalTime.now().toString}".getBytes("UTF-8"))
     fw.write(Record.toByteBuffer(record))
-    fw.flush
-    fw.close
+    fw.flush()
+    fw.close()
 
     logger.debug(s"on ${path.toString}")
     succeed

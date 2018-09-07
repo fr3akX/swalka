@@ -20,7 +20,7 @@ class PersistentWriterFlow(writer: => Writer)(implicit mat: Materializer) extend
     val w = writer
 
     override def postStop(): Unit = {
-      w.close
+      w.close()
       super.postStop()
     }
 

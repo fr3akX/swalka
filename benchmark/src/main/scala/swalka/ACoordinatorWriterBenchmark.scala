@@ -15,7 +15,7 @@ class ACoordinatorWriterBenchmark {
   @Benchmark
   def walWriteWithFlush: Unit = {
     ACoordinatorWriterBenchmark.writer.write(Record.toByteBuffer(rec))
-    ACoordinatorWriterBenchmark.writer.flush
+    ACoordinatorWriterBenchmark.writer.flush()
   }
 
   @Benchmark

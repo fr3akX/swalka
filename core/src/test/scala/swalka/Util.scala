@@ -17,7 +17,7 @@ object Util {
     val fw = new SegmentedWriter(path, segmentSize, 10.minutes)
 
     inputs.map(_.getBytes()).map(Record.wrap).map(Record.toByteBuffer).foreach(fw.write)
-    fw.close
+    fw.close()
 
     f(path)
   }
@@ -27,8 +27,8 @@ object Util {
     val fw = new FileWriter(path, 0)
     val record = Record.wrap(s"āžņīļ Current local time is ${LocalTime.now().toString}".getBytes("UTF-8"))
     fw.write(Record.toByteBuffer(record))
-    fw.flush
-    fw.close
+    fw.flush()
+    fw.close()
     f(path)
   }
 }

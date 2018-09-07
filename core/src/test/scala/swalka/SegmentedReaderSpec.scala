@@ -1,7 +1,11 @@
 package swalka
 
 import org.scalatest.{FlatSpec, Matchers}
-import swalka.reader.SegmentedReader
+import swalka.Util.withTempDir
+import swalka.offset.{FileOffset, Offset}
+import swalka.reader.{CommitableReader, SegmentedReader}
+import swalka.writer.SegmentedWriter
+import scala.concurrent.duration._
 
 class SegmentedReaderSpec extends FlatSpec with Matchers {
 
@@ -21,5 +25,16 @@ class SegmentedReaderSpec extends FlatSpec with Matchers {
     doRead()
 
     seedData shouldBe result.reverse
+  }
+
+  it should "not fail on empty state" in withTempDir { dir =>
+    val sw = new SegmentedWriter(dir, 1, 60.seconds)
+    sw.close()
+
+    val offset = new FileOffset("test", dir)
+    val segReader = new SegmentedReader(dir, offset.current)
+    val reader = new CommitableReader(segReader, offset)
+    reader.hasNext
+    succeed
   }
 }

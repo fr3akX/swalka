@@ -10,8 +10,8 @@ class FileWriterSpec extends FlatSpec with Matchers {
     val fw = new FileWriter(path, 1)
     val record = Record.wrap(s"āžņīļ Current local time is ${LocalTime.now().toString}".getBytes("UTF-8"))
     fw.write(Record.toByteBuffer(record))
-    fw.flush
-    fw.close
+    fw.flush()
+    fw.close()
     succeed
   }
 }

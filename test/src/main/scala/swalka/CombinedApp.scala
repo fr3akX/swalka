@@ -6,7 +6,7 @@ import java.util.concurrent.Executors
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.stream.scaladsl.{Sink, Source}
 import com.typesafe.scalalogging.StrictLogging
 import swalka.streams.{PersistentWriterFlow, WatchedReaderFlow}
 import swalka.writer.{HouseKeeper, SegmentedWriter}
@@ -25,7 +25,6 @@ object CombinedApp extends App with StrictLogging {
   import system.dispatcher
 
   val dbPath = Paths.get("./benchmark/target")
-
   val exec = Executors.newSingleThreadScheduledExecutor()
   val houseKeeper = new HouseKeeper(dbPath, exec, 1.minute)
   val cancellation = houseKeeper.start()

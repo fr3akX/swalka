@@ -7,7 +7,7 @@ import com.typesafe.scalalogging.LazyLogging
 import swalka.Segment
 
 import scala.concurrent.duration.FiniteDuration
-
+import scala.concurrent.duration._
 
 class SegmentedWriter(
   path: Path,
@@ -29,7 +29,7 @@ class SegmentedWriter(
 
   private def newSegment = {
     size = 0L
-    writer.close
+    writer.close()
 
     val invalidated = Segment.invalidate(segments, maxClosedSegmentAge)
     if(invalidated != segments) {
@@ -47,7 +47,7 @@ class SegmentedWriter(
 
     logger.info(s"Segments: $segments")
     writer = new FileWriter(path, currentSegment.num)
-    flush
+    flush()
   }
 
   @inline
@@ -60,15 +60,24 @@ class SegmentedWriter(
     size += data.capacity()
   }
 
-  override def flush: Unit = {
-    writer.flush
+  override def flush(): Unit = {
+    writer.flush()
     //    c.force(true)
     //    fos.getFD.sync()
   }
 
-  override def close: Unit = {
+  override def close(): Unit = {
     c.close()
     //    fos.close()
-    writer.close
+    writer.close()
   }
+}
+
+object SegmentedWriter {
+  /**
+    * creates empty segments file, which should be present before SegmentedReader is initialized
+    * @param dbPath
+    */
+  def init(dbPath: Path): Unit =
+    new SegmentedWriter(dbPath, 1, 10.seconds).close()
 }

@@ -16,11 +16,11 @@ class FileWriter(path: Path, segment: Int) extends Writer {
     c.write(data)
   }
 
-  override def flush: Unit = {
+  override def flush(): Unit = {
     c.force(true)
     fos.getFD.sync()
   }
-  override def close: Unit = {
+  override def close(): Unit = {
     c.close()
     fos.close()
   }

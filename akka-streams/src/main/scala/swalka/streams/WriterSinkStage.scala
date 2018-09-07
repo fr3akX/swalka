@@ -15,7 +15,7 @@ class WriterSinkStage(writer: => Writer) extends GraphStage[SinkShape[Record]]{
     val w = writer
 
     override def postStop(): Unit = {
-      w.close
+      w.close()
       super.postStop()
     }
 
