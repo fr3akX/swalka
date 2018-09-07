@@ -104,7 +104,7 @@ object WatchedReaderFlow {
 
   def notifiableProcessor(readerFlow: Flow[Notification, CommitableResult, _], processor: Sink[CommitableResult, _]) =
     Source
-      .queue[Unit](1, OverflowStrategy.dropNew)
+      .queue[Notification](1, OverflowStrategy.dropNew)
       .via(readerFlow)
       .toMat(processor)(Keep.left)
 }
