@@ -67,4 +67,7 @@ object Record {
     byteStream.close()
     byteStream.toByteArray
   }
+
+  def make(data: Array[Byte]): ByteBuffer = toByteBuffer(wrap(data))
+  def make(data: String): ByteBuffer = make(data.getBytes())
 }
