@@ -38,6 +38,13 @@ lazy val `akka-streams` = project
 lazy val root = Project("swalka", file("."))
   .settings(moduleName := "swalka")
   .settings(defaultSettings)
+  .settings(
+    git.remoteRepo := "git@github.com:fr3akX/swalka.git",
+    sourceDirectory in Paradox := sourceDirectory.value / "site",
+    paradoxTheme := Some(builtinParadoxTheme("generic"))
+  )
   .aggregate(core, test, benchmark, `akka-streams`)
+  .enablePlugins(GhpagesPlugin, ParadoxSitePlugin)
 
 addCommandAlias("bench", "; project benchmark; jmh:run -i 1 -wi 3 -f1 -t1")
+addCommandAlias("site", "; makeSite; ghpagesPushSite")
